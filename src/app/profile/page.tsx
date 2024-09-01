@@ -62,7 +62,7 @@ const Profile = () => {
     setIsDialogOpen(false);
   };
 
-  const handleSaveProfile = async (profileData: IProfile) => {
+  const handleSaveProfile = async (profileData: FormData) => {
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("No authentication token found");
@@ -75,9 +75,8 @@ const Profile = () => {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
           },
-          body: JSON.stringify(profileData),
+          body: profileData,
         }
       );
       if (!response.ok) {
@@ -101,7 +100,6 @@ const Profile = () => {
   if (!profile) {
     return <div>Error loading profile</div>;
   }
-
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="flex p-8 gap-10">

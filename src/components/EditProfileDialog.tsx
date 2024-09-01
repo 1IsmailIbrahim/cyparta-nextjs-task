@@ -16,7 +16,7 @@ interface EditProfileDialogProps {
   open: boolean;
   onClose: () => void;
   profile: IProfile;
-  onSave: (profileData: IProfile) => void;
+  onSave: (profileData: FormData) => void;
 }
 
 const EditProfileDialog = ({
@@ -35,7 +35,13 @@ const EditProfileDialog = ({
       bio: Yup.string().nullable(),
     }),
     onSubmit: (values) => {
-      onSave(values);
+      const formData = new FormData();
+      formData.append("first_name", values.first_name);
+      formData.append("last_name", values.last_name);
+      formData.append("phone", values.phone);
+      formData.append("email", values.email);
+      formData.append("bio", values.bio || "");
+      onSave(formData);
     },
   });
 
