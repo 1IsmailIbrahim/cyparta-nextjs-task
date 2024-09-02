@@ -5,10 +5,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import image from "/public/logo.png";
 import Image from "next/image";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import Cookies from "js-cookie";
+import { login } from "@/app/api/auth";
+import image from "/public/logo.png";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -24,28 +26,10 @@ const LoginForm = () => {
     }),
     onSubmit: async (values, { setStatus }) => {
       try {
-        const formData = new URLSearchParams();
-        formData.append("email", values.email);
-        formData.append("password", values.password);
-
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/login/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData.toString(),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to login");
-        }
-
-        const data = await response.json();
+        const data = await login(values.email, values.password);
         localStorage.setItem("token", data.access);
-        router.push("/profile");
+        Cookies.set("token", data.access, { expires: 7 });
+        router.push("/employees/profile");
       } catch (error: any) {
         setStatus({ general: error.message });
       }

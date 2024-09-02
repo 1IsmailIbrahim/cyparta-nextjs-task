@@ -1,117 +1,60 @@
-import Image from "next/image";
-
 export type SidebarItem = {
   href: string;
   label: string;
-  icon: React.ReactNode;
+  activeIcon: string;
+  inactiveIcon: string;
   subItems?: SidebarItem[];
 };
 
 export const sidebarItems: SidebarItem[] = [
   {
-    href: "#",
+    href: "/dashboard",
     label: "Dashboard",
-    icon: (
-      <Image
-        src="/dashboard.svg"
-        alt="dashboard Logo"
-        className="mr-3"
-        width={21}
-        height={19}
-      />
-    ),
+    activeIcon: "/dashboard-active.svg",
+    inactiveIcon: "/dashboard.svg",
   },
   {
-    href: "#",
+    href: "",
     label: "Employees",
-    icon: (
-      <Image
-        src="/employees.svg"
-        alt="employees Logo"
-        className="mr-3"
-        width={24}
-        height={24}
-      />
-    ),
+    activeIcon: "/employees-active.svg",
+    inactiveIcon: "/employees.svg",
     subItems: [
       {
-        href: "#",
+        href: "/employees/profile",
         label: "Profile",
-        icon: (
-          <Image
-            src="/user.svg"
-            alt="user Logo"
-            className="mr-3"
-            width={21}
-            height={19}
-          />
-        ),
+        activeIcon: "/user.svg",
+        inactiveIcon: "/user.svg",
       },
       {
-        href: "#",
+        href: "/employees/attendance",
         label: "Attendance",
-        icon: (
-          <Image
-            src="/calendar.svg"
-            alt="calendar Logo"
-            className="mr-3"
-            width={21}
-            height={19}
-          />
-        ),
+        activeIcon: "/calendar.svg",
+        inactiveIcon: "/calendar.svg",
       },
       {
-        href: "#",
+        href: "/employees/tasks",
         label: "Tasks",
-        icon: (
-          <Image
-            src="/task.svg"
-            alt="task Logo"
-            className="mr-3"
-            width={21}
-            height={19}
-          />
-        ),
+        activeIcon: "/task.svg",
+        inactiveIcon: "/task.svg",
       },
     ],
   },
   {
-    href: "#",
+    href: "",
     label: "Payroll",
-    icon: (
-      <Image
-        src="/payroll.svg"
-        alt="payroll Logo"
-        className="mr-3"
-        width={21}
-        height={19}
-      />
-    ),
+    activeIcon: "/payroll.svg",
+    inactiveIcon: "/payroll.svg",
   },
   {
-    href: "#",
+    href: "",
     label: "Holidays",
-    icon: (
-      <Image
-        src="/holidays.svg"
-        alt="holidays Logo"
-        className="mr-3"
-        width={21}
-        height={19}
-      />
-    ),
+    activeIcon: "/holidays.svg",
+    inactiveIcon: "/holidays.svg",
   },
   {
-    href: "#",
+    href: "",
     label: "Advanced Payment",
-    icon: (
-      <Image
-        src="/payment.svg"
-        alt="Payment Logo"
-        className="mr-3"
-        width={21}
-        height={19}
-      />
-    ),
+    activeIcon: "/payment.svg",
+    inactiveIcon: "/payment.svg",
   },
 ];

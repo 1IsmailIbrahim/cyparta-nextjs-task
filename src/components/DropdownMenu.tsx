@@ -21,7 +21,7 @@ const MyDropdownMenu = ({ sidebarItems }: DropdownMenuProps) => {
   useEffect(() => {
     const handleResize = () => {
       if (isOpen) {
-        setIsOpen(false); 
+        setIsOpen(false);
       }
     };
 

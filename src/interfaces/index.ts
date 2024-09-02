@@ -6,4 +6,5 @@ export interface IProfile {
   email: string;
   bio?: string | null;
   cover?: string;
+  image?: string;
 }

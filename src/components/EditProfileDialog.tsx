@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +19,7 @@ interface EditProfileDialogProps {
   open: boolean;
   onClose: () => void;
   profile: IProfile;
-  onProfileUpdate: (updatedProfile: IProfile) => void;
+  onProfileUpdate: (profile: IProfile) => void;
 }
 
 const EditProfileDialog = ({
