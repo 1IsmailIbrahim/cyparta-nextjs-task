@@ -11,6 +11,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         lexend: ["lexend", "sans-serif"],
+        inter: ["inter", "sans-serif"],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

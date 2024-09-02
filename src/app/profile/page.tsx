@@ -6,12 +6,14 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProfileField from "@/components/ProfileField";
-import { Bell, FilePen, User, Briefcase, FileText, Lock } from "lucide-react";
+import { Bell, Briefcase, FileText, Lock, UserRound } from "lucide-react";
 import Link from "next/link";
 import EditProfileDialog from "@/components/EditProfileDialog";
 import avatar from "/public/avatar.png";
 import Image from "next/image";
 import { IProfile } from "@/interfaces";
+import MyDropdownMenu from "@/components/DropdownMenu";
+import { sidebarItems } from "@/components/sidebarItems";
 
 const Profile = () => {
   const [profile, setProfile] = useState<IProfile | null>(null);
@@ -21,7 +23,6 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem("token");
-
       if (!token) {
         console.error("No authentication token found");
         setLoading(false);
@@ -37,11 +38,9 @@ const Profile = () => {
             },
           }
         );
-
         if (!response.ok) {
           throw new Error("Failed to fetch profile");
         }
-
         const data: IProfile = await response.json();
         setProfile(data);
       } catch (error) {
@@ -54,6 +53,7 @@ const Profile = () => {
 
     fetchProfile();
   }, []);
+
   const handleEditProfile = () => {
     setIsDialogOpen(true);
   };
@@ -62,35 +62,8 @@ const Profile = () => {
     setIsDialogOpen(false);
   };
 
-  const handleSaveProfile = async (profileData: FormData) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      console.error("No authentication token found");
-      return;
-    }
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/profile/`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: profileData,
-        }
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Failed to update profile:", errorData);
-        throw new Error(
-          `Error ${response.status}: ${errorData.detail || "Unknown error"}`
-        );
-      }
-      const data: IProfile = await response.json();
-      setProfile(data);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
+  const handleProfileUpdate = (updatedProfile: IProfile) => {
+    setProfile(updatedProfile);
   };
 
   if (loading) {
@@ -105,24 +78,34 @@ const Profile = () => {
       <main className="flex p-8 gap-10">
         <Sidebar />
         <div className="flex-1 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-2 text-gray-600">
-              <Link href="#" className="hover:underline" prefetch={false}>
+          <div className="flex items-center justify-between mb-6 font-inter font-semibold">
+            <div className="flex items-center space-x-1 text-gray-600">
+              <Link href="#" className="hover:underline " prefetch={false}>
                 Employees
               </Link>
-              <span>&gt;</span>
+              <span>
+                <Image
+                  src="/arrow-right.svg"
+                  alt="arrow-right Logo"
+                  width={24}
+                  height={24}
+                />
+              </span>
               <Link href="#" className="hover:underline" prefetch={false}>
                 Profile
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Bell className="w-6 h-6 text-gray-600" />
+              <Button variant={"secondary"} size={"icon"}>
+                <Bell className="w-6 h-6 text-gray-600 " />
+              </Button>
               <Avatar>
                 <AvatarImage src={`${avatar}`} alt={profile.first_name} />
                 <AvatarFallback>
-                  {profile.first_name ? profile.first_name[0] : "U"}
+                  <Image src={avatar} width={40} height={40} alt={""} />
                 </AvatarFallback>
               </Avatar>
+              <MyDropdownMenu sidebarItems={sidebarItems} />
             </div>
           </div>
           <div className="flex items-center mb-6">
@@ -133,25 +116,53 @@ const Profile = () => {
               </AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold">
+              <h1 className="font-lexend text-2xl font-bold">
                 {profile.first_name || "First Name"}
               </h1>
-              <p className="text-gray-600">{profile.bio || "Bio"}</p>
-              <p className="text-gray-600">{profile.email || "Email"}</p>
+              <p className="text-gray-600 flex">
+                {
+                  <Image
+                    src="/business.svg"
+                    alt="business Logo"
+                    className="mr-1"
+                    width={18}
+                    height={18}
+                  />
+                }
+                {profile.bio || "Bio"}
+              </p>
+              <p className="text-gray-600 flex">
+                {
+                  <Image
+                    src="/mail.svg"
+                    alt="mail Logo"
+                    className="mr-1"
+                    width={18}
+                    height={18}
+                  />
+                }
+                {profile.email || "Email"}
+              </p>
             </div>
             <Button
               variant="default"
               className="ml-auto"
               onClick={handleEditProfile}
             >
-              <FilePen className="w-4 h-4 mr-2" />
+              <Image
+                src="/pen.svg"
+                alt="pen Logo"
+                className="mr-2"
+                width={18}
+                height={18}
+              />
               Edit Profile
             </Button>
           </div>
           <Tabs defaultValue="personal-info">
-            <TabsList className="mb-6">
+            <TabsList className="mb-24 sm:mb-16 gap-2 md:gap-0 md:mb-6 flex flex-wrap">
               <TabsTrigger value="personal-info">
-                <User className="w-4 h-4 mr-2" />
+                <UserRound className="w-4 h-4 mr-2" />
                 Personal Information
               </TabsTrigger>
               <TabsTrigger value="professional-info">
@@ -206,7 +217,7 @@ const Profile = () => {
             open={isDialogOpen}
             onClose={handleCloseDialog}
             profile={profile}
-            onSave={handleSaveProfile}
+            onProfileUpdate={handleProfileUpdate}
           />
         </div>
       </main>

@@ -5,4 +5,5 @@ export interface IProfile {
   phone: string;
   email: string;
   bio?: string | null;
+  cover?: string;
 }

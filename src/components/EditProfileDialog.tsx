@@ -11,20 +11,23 @@ import { Label } from "@/components/ui/label";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IProfile } from "@/interfaces";
+import { useToast } from "@/hooks/use-toast";
 
 interface EditProfileDialogProps {
   open: boolean;
   onClose: () => void;
   profile: IProfile;
-  onSave: (profileData: FormData) => void;
+  onProfileUpdate: (updatedProfile: IProfile) => void;
 }
 
 const EditProfileDialog = ({
   open,
   onClose,
   profile,
-  onSave,
+  onProfileUpdate,
 }: EditProfileDialogProps) => {
+  const { toast } = useToast();
+
   const formik = useFormik({
     initialValues: profile,
     validationSchema: Yup.object({
@@ -34,14 +37,56 @@ const EditProfileDialog = ({
       email: Yup.string().email("Invalid email address").required("Required"),
       bio: Yup.string().nullable(),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No authentication token found");
+        return;
+      }
       const formData = new FormData();
       formData.append("first_name", values.first_name);
       formData.append("last_name", values.last_name);
       formData.append("phone", values.phone);
       formData.append("email", values.email);
       formData.append("bio", values.bio || "");
-      onSave(formData);
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/profile/`,
+          {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Failed to update profile:", errorData);
+          toast({
+            title: "Failed to update profile. Please try again.",
+            variant: "destructive",
+          });
+          throw new Error(
+            `Error ${response.status}: ${errorData.detail || "Unknown error"}`
+          );
+        }
+
+        const updatedProfile: IProfile = await response.json();
+        onProfileUpdate(updatedProfile);
+        onClose();
+        toast({
+          title: "Profile updated successfully.",
+        });
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        toast({
+          title: "An error occurred. Please try again.",
+          variant: "destructive",
+        });
+      }
     },
   });
 
