@@ -1,5 +1,6 @@
 import React from "react";
 import Sidebar from "./Sidebar";
+import Navbar from "./ui/Navbar";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (

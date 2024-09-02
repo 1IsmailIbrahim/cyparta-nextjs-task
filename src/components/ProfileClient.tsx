@@ -6,13 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProfileField from "@/components/ProfileField";
 import { Bell, Briefcase, FileText, Lock, UserRound } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
 import EditProfileDialog from "@/components/EditProfileDialog";
 import avatar from "/public/avatar.png";
-import MyDropdownMenu from "@/components/DropdownMenu";
-import { sidebarItems } from "@/components/sidebarItems";
 import { IProfile } from "@/interfaces";
+import Navbar from "./ui/Navbar";
 
 interface ProfileClientProps {
   profile: IProfile;
@@ -21,46 +19,15 @@ interface ProfileClientProps {
 const ProfileClient = ({ profile: initialProfile }: ProfileClientProps) => {
   const [profile, setProfile] = useState<IProfile>(initialProfile);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   const handleEditProfile = () => setIsDialogOpen(true);
   const handleCloseDialog = () => setIsDialogOpen(false);
 
   const handleProfileUpdate = (updatedProfile: IProfile) => {
     setProfile(updatedProfile);
-    // setIsDialogOpen(false);
   };
   return (
     <div>
-      <div className="flex items-center justify-between mb-6 font-inter font-semibold">
-        <div className="flex items-center space-x-1 text-gray-600">
-          <Link href="#" className="hover:underline " prefetch={false}>
-            Employees
-          </Link>
-          <span>
-            <Image
-              src="/arrow-right.svg"
-              alt="arrow-right Logo"
-              width={24}
-              height={24}
-            />
-          </span>
-          <Link href="#" className="hover:underline" prefetch={false}>
-            Profile
-          </Link>
-        </div>
-        <div className="flex items-center space-x-4">
-          <Button variant={"secondary"} size={"icon"}>
-            <Bell className="w-6 h-6 text-gray-600 " />
-          </Button>
-          <Avatar>
-            <AvatarImage src={`${avatar}`} alt={profile.first_name} />
-            <AvatarFallback>
-              <Image src={`${profile.image}`} width={40} height={40} alt={""} />
-            </AvatarFallback>
-          </Avatar>
-          <MyDropdownMenu sidebarItems={sidebarItems} />
-        </div>
-      </div>
+      <Navbar profile={profile} />
       <div className="flex items-center mb-6">
         <Avatar className="w-24 h-24 mr-6 rounded-md">
           <AvatarImage src={`${avatar}`} alt={profile.first_name} />
@@ -99,17 +66,17 @@ const ProfileClient = ({ profile: initialProfile }: ProfileClientProps) => {
         </div>
         <Button
           variant="default"
-          className="ml-auto"
+          className="ml-auto flex items-center space-x-2"
           onClick={handleEditProfile}
         >
           <Image
             src="/pen.svg"
             alt="pen Logo"
-            className="mr-2"
+            className="w-4 h-4"
             width={18}
             height={18}
           />
-          Edit Profile
+          <span className="hidden md:block">Edit Profile</span>
         </Button>
       </div>
       <Tabs defaultValue="personal-info">
