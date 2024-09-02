@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -11,8 +12,10 @@ import * as Yup from "yup";
 import Cookies from "js-cookie";
 import { login } from "@/app/api/auth";
 import image from "/public/logo.png";
+import { LoaderIcon } from "lucide-react";
 
 const LoginForm = () => {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const formik = useFormik({
@@ -25,6 +28,7 @@ const LoginForm = () => {
       password: Yup.string().required("Required"),
     }),
     onSubmit: async (values, { setStatus }) => {
+      setLoading(true);
       try {
         const data = await login(values.email, values.password);
         localStorage.setItem("token", data.access);
@@ -32,6 +36,8 @@ const LoginForm = () => {
         router.push("/employees/profile");
       } catch (error: any) {
         setStatus({ general: error.message });
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -76,8 +82,12 @@ const LoginForm = () => {
               ) : null}
             </div>
             <CardFooter>
-              <Button type="submit" className="w-full bg-[#262626]">
-                Sign in
+              <Button
+                type="submit"
+                className="w-full bg-[#262626]"
+                disabled={loading}
+              >
+                {loading ? <LoaderIcon className="animate-spin" /> : "Sign in"}
               </Button>
             </CardFooter>
           </form>
